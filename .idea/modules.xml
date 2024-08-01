@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/microservice-auth/microservice-auth.iml" filepath="$PROJECT_DIR$/microservice-auth/microservice-auth.iml" />
+      <module fileurl="file://$PROJECT_DIR$/microservice-clients/microservice-clients.iml" filepath="$PROJECT_DIR$/microservice-clients/microservice-clients.iml" />
+    </modules>
+  </component>
+</project>
