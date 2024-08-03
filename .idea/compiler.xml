@@ -10,14 +10,13 @@
         <module name="microservice-eureka" />
         <module name="microservice-config" />
         <module name="microservice.gateway" />
+        <module name="microservice-auth" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="microservice-clients" target="17" />
-    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="microservice-auth" options="-parameters" />
       <module name="microservice-clients" options="-parameters" />
       <module name="microservice-config" options="-parameters" />
       <module name="microservice-eureka" options="-parameters" />
