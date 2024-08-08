@@ -1,5 +1,6 @@
 package com.shop.auth.controller;
 
+import com.shop.auth.controller.dto.AuthCreateUserRequest;
 import com.shop.auth.controller.dto.AuthLoginRequest;
 import com.shop.auth.controller.dto.AuthResponse;
 import com.shop.auth.service.UserDetailServiceImpl;
@@ -18,6 +19,11 @@ public class AuthenticationController {
 
     @Autowired
     private UserDetailServiceImpl userDetailService;
+
+    @PostMapping("/sign-up")
+    public ResponseEntity<AuthResponse> register(@RequestBody @Valid AuthCreateUserRequest userRequest){
+        return new ResponseEntity<>(this.userDetailService.createUser(userRequest), HttpStatus.CREATED);
+    }
 
     @PostMapping("/log-in")
     public ResponseEntity<AuthResponse> login(@RequestBody @Valid AuthLoginRequest userRequest){
