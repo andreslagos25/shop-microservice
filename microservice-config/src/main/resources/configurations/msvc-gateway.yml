@@ -9,6 +9,17 @@ spring:
       discovery:
         locator:
           enabled: true
+      routes:
+        - id: auth
+          uri: 'lb://msvc-auth'
+          predicates:
+            Path=/api/auth/**
+        - id: clients
+          uri: 'lb://msvc-clients'
+          predicates:
+            Path=/api/client/**
+
+
 
 eureka:
   client:

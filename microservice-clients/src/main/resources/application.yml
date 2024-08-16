@@ -3,3 +3,7 @@ spring:
     name: msvc-clients
   config:
     import: optional:configserver:http://localhost:8888
+  cloud:
+    config:
+      import-check:
+        enabled: false
