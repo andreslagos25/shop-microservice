@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ClientServiceImpl implements IClientService{
@@ -29,6 +30,9 @@ public class ClientServiceImpl implements IClientService{
 
     @Override
     public void saveClient(ClientDTO clientDTO) {
+        if(Objects.isNull(clientDTO.getAddressSet())){
+            throw new IllegalArgumentException("You must have a least one address");
+        }
         ClientEntity client = ClientEntity.builder()
                 .nameClient(clientDTO.getNameClient())
                 .lastnameClient(clientDTO.getLastnameClient())
