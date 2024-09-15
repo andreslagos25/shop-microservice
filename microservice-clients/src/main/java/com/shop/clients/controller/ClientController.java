@@ -1,6 +1,5 @@
 package com.shop.clients.controller;
 
-import com.shop.clients.persistence.entity.ClientEntity;
 import com.shop.clients.persistence.entity.dto.ClientDTO;
 import com.shop.clients.service.ClientServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
