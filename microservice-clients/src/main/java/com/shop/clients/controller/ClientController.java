@@ -5,10 +5,7 @@ import com.shop.clients.service.ClientServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/client")
@@ -25,6 +22,14 @@ public class ClientController {
             return ResponseEntity.status(HttpStatus.CREATED).build();
         }catch (Exception e){
             return ResponseEntity.badRequest().build();
+        }
+    }
+    @PatchMapping("/update")
+    public ResponseEntity updateClient(@RequestBody ClientDTO clientDTO, @RequestParam String idClient){
+        try {
+            return ResponseEntity.ok().body("UPDATE");
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e);
         }
     }
 }
