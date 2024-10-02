@@ -11,4 +11,5 @@ public interface IClientService {
     List<ClientEntity> findAll();
     void saveClient(ClientDTO clientDTO);
     ClientEntity findById(String id);
+    ClientEntity findByUserId(String idUser);
 }

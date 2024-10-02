@@ -32,4 +32,9 @@ public class ClientController {
             return ResponseEntity.badRequest().body(e);
         }
     }
+
+    @GetMapping("/search-by-user/{idUser}")
+    public ResponseEntity<?> findByIdUser(@PathVariable String idUser){
+        return ResponseEntity.ok(clientService.findByUserId(idUser));
+    }
 }

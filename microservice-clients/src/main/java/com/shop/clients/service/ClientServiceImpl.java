@@ -58,4 +58,9 @@ public class ClientServiceImpl implements IClientService{
     public ClientEntity findById(String id) {
         return clientRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Not found"));
     }
+
+    @Override
+    public ClientEntity findByUserId(String idUser){
+        return clientRepository.findByUserId(idUser);
+    }
 }

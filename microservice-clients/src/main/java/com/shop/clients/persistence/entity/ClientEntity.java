@@ -31,4 +31,6 @@ public class ClientEntity {
     @JsonManagedReference
     private Set<AddressEntity> addressSet = new HashSet<>();
 
+    @Column(name = "user_id")
+    private String userId;
 }
