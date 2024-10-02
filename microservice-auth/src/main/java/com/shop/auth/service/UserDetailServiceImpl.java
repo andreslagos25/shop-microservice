@@ -1,8 +1,11 @@
 package com.shop.auth.service;
 
+import com.shop.auth.client.CustomerClient;
 import com.shop.auth.controller.dto.AuthCreateUserRequest;
 import com.shop.auth.controller.dto.AuthLoginRequest;
 import com.shop.auth.controller.dto.AuthResponse;
+import com.shop.auth.controller.dto.ClientDTO;
+import com.shop.auth.http.response.ClientByUserResponse;
 import com.shop.auth.persistance.entity.RoleEntity;
 import com.shop.auth.persistance.entity.UserEntity;
 import com.shop.auth.persistance.repository.RoleRepository;
@@ -28,7 +31,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class UserDetailServiceImpl implements UserDetailsService {
+public class UserDetailServiceImpl implements UserDetailsService, IUserService {
 
     @Autowired
     private JwtUtils jwtUtils;
@@ -41,6 +44,9 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private CustomerClient customerClient;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -86,7 +92,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
         Authentication authentication = new UsernamePasswordAuthenticationToken(userSaved, null, authorities);
 
         String accesToken = jwtUtils.createToken(authentication);
-        AuthResponse authResponse = new AuthResponse(username, "User created successfully", accesToken, true);
+        AuthResponse authResponse = new AuthResponse(userSaved.getId() ,username, "User created successfully", accesToken, true);
         return authResponse;
 
     }
@@ -99,7 +105,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         String accessToken = jwtUtils.createToken(authentication);
-        AuthResponse authResponse = new AuthResponse(username, "User logged successfully", accessToken, true);
+        AuthResponse authResponse = new AuthResponse(null, username, "User logged successfully", accessToken, true);
         return authResponse;
     }
 
@@ -115,5 +121,18 @@ public class UserDetailServiceImpl implements UserDetailsService {
         }
 
         return new UsernamePasswordAuthenticationToken(username, password, userDetails.getAuthorities());
+    }
+
+    @Override
+    public ClientByUserResponse findClientByIdUser(String idUser) {
+        // Consultar el usuario
+        UserEntity user = userRepository.findUserById(idUser).orElseThrow(() -> new RuntimeException("User doesn't exist"));
+
+        // Obtener el cliente
+        ClientDTO clientDTO = customerClient.findClientByUser(idUser);
+        return ClientByUserResponse.builder()
+                .username(user.getUsername())
+                .clientDTO(clientDTO)
+                .build();
     }
 }
