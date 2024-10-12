@@ -25,8 +25,11 @@ public class MicroserviceAuthApplication {
 		SpringApplication.run(MicroserviceAuthApplication.class, args);
 	}
 
-
-	@Bean
+	/*
+	* AL INICIAR POR PRIMERA VEZ LA APLICACION, LUEGO COMENTAR
+	* EL INIT YA QUE HARÍA CONSTANTEMENTE INSERCION A LA BD
+	* */
+	/*@Bean
 	CommandLineRunner init(UserRepository userRepository) {
 		return args -> {
 			PermissionEntity createPermission = PermissionEntity.builder()
@@ -59,7 +62,7 @@ public class MicroserviceAuthApplication {
 					.build();
 
 			/* CREATE USERS */
-
+			/*
 			UserEntity userCarlos = UserEntity.builder()
 					.username("carlos")
 					.password("$2a$10$cMY29RPYoIHMJSuwRfoD3eQxU1J5Rww4VnNOUOAEPqCBshkNfrEf6")
@@ -91,5 +94,5 @@ public class MicroserviceAuthApplication {
 					.build();
 			userRepository.saveAll(List.of(userCarlos, userAndres, userLaura));
 		};
-	}
+	}*/
 }

@@ -38,6 +38,7 @@ public class ClientServiceImpl implements IClientService{
                 .lastnameClient(clientDTO.getLastnameClient())
                 .email(clientDTO.getEmail())
                 .phone(clientDTO.getPhone())
+                .userId(clientDTO.getUserId())
                 .build();
         client = clientRepository.save(client);
         for(AddressDTO addressDTO : clientDTO.getAddressSet()){
