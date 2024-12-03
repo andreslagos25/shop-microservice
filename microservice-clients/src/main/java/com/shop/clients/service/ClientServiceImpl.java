@@ -8,7 +8,6 @@ import com.shop.clients.persistence.repository.AddressRepository;
 import com.shop.clients.persistence.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -51,6 +50,12 @@ public class ClientServiceImpl implements IClientService{
                     .build();
             addressRepository.save(address);
         }
+    }
+
+    @Override
+    public void deleteUser(String emailClient){
+        ClientEntity client = clientRepository.findByEmail(emailClient).orElseThrow(() -> new IllegalArgumentException("Email doesn't exists"));
+        clientRepository.delete(client);
     }
 
 

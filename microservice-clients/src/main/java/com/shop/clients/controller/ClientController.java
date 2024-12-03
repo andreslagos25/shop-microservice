@@ -5,10 +5,7 @@ import com.shop.clients.service.ClientServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/client")
@@ -26,5 +23,11 @@ public class ClientController {
         }catch (Exception e){
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    @DeleteMapping("/delete-user")
+    public ResponseEntity deleteUser(@RequestParam String emailClient){
+        clientService.deleteUser(emailClient);
+        return ResponseEntity.ok("User deleted successfully");
     }
 }
