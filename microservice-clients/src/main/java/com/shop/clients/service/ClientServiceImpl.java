@@ -54,12 +54,17 @@ public class ClientServiceImpl implements IClientService{
         }
     }
 
-
+    /*
+    * Obtener informacion de cliente por el ID del cliente
+    * */
     @Override
     public ClientEntity findById(String id) {
         return clientRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Not found"));
     }
 
+    /**
+     * Obtenemos la data del cliente por medio del ID del usuario
+     */
     @Override
     public ClientEntity findByUserId(String idUser){
         return clientRepository.findByUserId(idUser);

@@ -13,7 +13,9 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "clients")
+@Table(name = "clients", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "user_id")
+})
 public class ClientEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
