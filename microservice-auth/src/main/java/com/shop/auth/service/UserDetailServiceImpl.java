@@ -59,6 +59,11 @@ public class UserDetailServiceImpl implements UserDetailsService, IUserService {
         return new User(userEntity.getUsername(), userEntity.getPassword(), userEntity.isEnabled(), userEntity.isAccountNoExpired(), userEntity.isCredentialNoExpired(), userEntity.isAccountNoLocked(), authorityList);
     }
 
+    public String getIdUser(String username){
+        UserEntity userEntity = userRepository.findUserEntityByUsername(username).orElseThrow(() -> new UsernameNotFoundException("EL usuario " + username + " no existe"));
+        return userEntity.getId();
+    }
+
     public AuthResponse createUser(AuthCreateUserRequest createRoleRequest){
         String username = createRoleRequest.username();
         String password = createRoleRequest.password();
@@ -91,7 +96,7 @@ public class UserDetailServiceImpl implements UserDetailsService, IUserService {
         SecurityContext securityContextHolder = SecurityContextHolder.getContext();
         Authentication authentication = new UsernamePasswordAuthenticationToken(userSaved, null, authorities);
 
-        String accesToken = jwtUtils.createToken(authentication);
+        String accesToken = jwtUtils.createToken(authentication, userSaved.getId());
         AuthResponse authResponse = new AuthResponse(userSaved.getId() ,username, "User created successfully", accesToken, true);
         return authResponse;
 
@@ -100,11 +105,11 @@ public class UserDetailServiceImpl implements UserDetailsService, IUserService {
     public AuthResponse loginUser(AuthLoginRequest authLoginRequest){
         String username = authLoginRequest.username();
         String password = authLoginRequest.password();
-
+        String idUser = getIdUser(username);
         Authentication authentication = this.authenticate(username, password);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String accessToken = jwtUtils.createToken(authentication);
+        String accessToken = jwtUtils.createToken(authentication, idUser);
         AuthResponse authResponse = new AuthResponse(null, username, "User logged successfully", accessToken, true);
         return authResponse;
     }

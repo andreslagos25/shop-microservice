@@ -29,7 +29,7 @@ public class JwtUtils {
      * @param authentication
      * @return
      */
-    public String createToken(Authentication authentication){
+    public String createToken(Authentication authentication, String idUser){
         // Designa el algoritmo HMAC256 para la clave secreta
         Algorithm algorithm = Algorithm.HMAC256(this.privateKey);
 
@@ -45,8 +45,9 @@ public class JwtUtils {
         // además se le agrega fechas para que el token expire
         String jwtToken = JWT.create()
                 .withIssuer(this.userGenerator)
-                .withSubject(username)
+                .withSubject(idUser)
                 .withClaim("authorities", authorities)
+                .withClaim("username", username)
                 .withIssuedAt(new Date())
                 .withExpiresAt(new Date(System.currentTimeMillis() + 1800000))
                 .withJWTId(UUID.randomUUID().toString())
@@ -71,7 +72,7 @@ public class JwtUtils {
     }
 
     public String extractUsername(DecodedJWT decodedJWT){
-        return decodedJWT.getSubject().toString();
+        return decodedJWT.getClaim("username").toString();
     }
 
     public Claim getSpecificClaim(DecodedJWT decodedJWT, String claimName){
