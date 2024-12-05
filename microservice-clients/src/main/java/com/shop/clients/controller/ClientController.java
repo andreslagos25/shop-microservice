@@ -37,4 +37,10 @@ public class ClientController {
     public ResponseEntity<?> findByIdUser(@PathVariable String idUser){
         return ResponseEntity.ok(clientService.findByUserId(idUser));
     }
+
+    @DeleteMapping("/delete-user/{idUser}")
+    public ResponseEntity deleteUser(@PathVariable String idUser){
+        clientService.deleteUser(idUser);
+        return ResponseEntity.ok("User deleted successfully");
+    }
 }

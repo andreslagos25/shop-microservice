@@ -25,11 +25,9 @@ public class MicroserviceAuthApplication {
 		SpringApplication.run(MicroserviceAuthApplication.class, args);
 	}
 
+	/* Puedes ejecutar una vez este comando */
 	/*
-	* AL INICIAR POR PRIMERA VEZ LA APLICACION, LUEGO COMENTAR
-	* EL INIT YA QUE HARÍA CONSTANTEMENTE INSERCION A LA BD
-	* */
-	/*@Bean
+	@Bean
 	CommandLineRunner init(UserRepository userRepository) {
 		return args -> {
 			PermissionEntity createPermission = PermissionEntity.builder()
@@ -60,7 +58,7 @@ public class MicroserviceAuthApplication {
 					.roleEnum(RoleEnum.DEVELOPER)
 					.permissionList(Set.of(createPermission, readPermission, updatePermission, refactorPermission))
 					.build();
-
+			*/
 			/* CREATE USERS */
 			/*
 			UserEntity userCarlos = UserEntity.builder()

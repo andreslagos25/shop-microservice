@@ -8,7 +8,6 @@ import com.shop.clients.persistence.repository.AddressRepository;
 import com.shop.clients.persistence.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -58,6 +57,13 @@ public class ClientServiceImpl implements IClientService{
     * Obtener informacion de cliente por el ID del cliente
     * */
     @Override
+    public void deleteUser(String idUser){
+        ClientEntity client = clientRepository.findByUserId(idUser).orElseThrow(() -> new IllegalArgumentException("User doesn't exists"));
+        clientRepository.delete(client);
+    }
+
+
+    @Override
     public ClientEntity findById(String id) {
         return clientRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Not found"));
     }
@@ -67,6 +73,6 @@ public class ClientServiceImpl implements IClientService{
      */
     @Override
     public ClientEntity findByUserId(String idUser){
-        return clientRepository.findByUserId(idUser);
+        return clientRepository.findByUserId(idUser).orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
 }

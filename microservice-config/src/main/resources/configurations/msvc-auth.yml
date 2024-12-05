@@ -10,8 +10,10 @@ spring:
     username: root
     password: secret
   jpa:
+    show-sql: true
     hibernate:
       ddl-auto: update
+      # Cambiamos a update para que no elimine los cambios realizados en la BD
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
 
