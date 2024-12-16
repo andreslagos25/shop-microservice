@@ -27,6 +27,7 @@ public class SecurityConfig {
                 .authorizeExchange(exchange -> exchange
                         .pathMatchers(HttpMethod.POST, "/api/auth/**").permitAll() // Permitir el acceso a las rutas de autenticación
                         .pathMatchers("/api/client/**").hasAuthority("CREATE") // Requiere autoridad CREATE para acceder a las rutas de clientes
+                        .pathMatchers("/api/profile/**").authenticated()
                         .anyExchange().authenticated() // Cualquier otra ruta requiere autenticación
                 )
                 .addFilterAfter(new JwtTokenValidator(jwtUtils), SecurityWebFiltersOrder.AUTHENTICATION) // Agregar el filtro JWT

@@ -53,14 +53,6 @@ public class ClientServiceImpl implements IClientService{
         }
     }
 
-    /*
-    * Obtener informacion de cliente por el ID del cliente
-    * */
-    @Override
-    public void deleteUser(String idUser){
-        ClientEntity client = clientRepository.findByUserId(idUser).orElseThrow(() -> new IllegalArgumentException("User doesn't exists"));
-        clientRepository.delete(client);
-    }
 
 
     @Override

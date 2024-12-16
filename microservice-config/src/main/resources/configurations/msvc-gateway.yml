@@ -13,11 +13,15 @@ spring:
         - id: auth
           uri: 'lb://msvc-auth'
           predicates:
-            Path=/api/auth/**
+            - Path=/api/auth/**
+        - id: profile
+          uri: 'lb://msvc-auth'
+          predicates:
+            - Path=/api/profile/**
         - id: clients
           uri: 'lb://msvc-clients'
           predicates:
-            Path=/api/client/**
+            - Path=/api/client/**
 
 security:
   jwt:

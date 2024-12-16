@@ -11,5 +11,5 @@ public interface IClientService {
     void saveClient(ClientDTO clientDTO);
     ClientEntity findById(String id);
     ClientEntity findByUserId(String idUser);
-    void deleteUser(String idUser);
+
 }
