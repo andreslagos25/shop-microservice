@@ -18,7 +18,7 @@ public class ProfileController {
     @PatchMapping("disable/{idUser}")
     public ResponseEntity disableUser(@PathVariable String idUser){
         UserEntity user = userRepository.findById(idUser).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        user.setAccountNoLocked(false);
+        user.setEnabled(false);
         userRepository.save(user);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

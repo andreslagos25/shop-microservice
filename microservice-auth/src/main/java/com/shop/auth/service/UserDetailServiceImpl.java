@@ -59,9 +59,10 @@ public class UserDetailServiceImpl implements UserDetailsService, IUserService {
         return new User(userEntity.getUsername(), userEntity.getPassword(), userEntity.isEnabled(), userEntity.isAccountNoExpired(), userEntity.isCredentialNoExpired(), userEntity.isAccountNoLocked(), authorityList);
     }
 
-    public String getIdUser(String username){
+
+    public UserEntity getUserEntity(String username){
         UserEntity userEntity = userRepository.findUserEntityByUsername(username).orElseThrow(() -> new UsernameNotFoundException("EL usuario " + username + " no existe"));
-        return userEntity.getId();
+        return userEntity;
     }
 
     public AuthResponse createUser(AuthCreateUserRequest createRoleRequest){
@@ -96,7 +97,7 @@ public class UserDetailServiceImpl implements UserDetailsService, IUserService {
         SecurityContext securityContextHolder = SecurityContextHolder.getContext();
         Authentication authentication = new UsernamePasswordAuthenticationToken(userSaved, null, authorities);
 
-        String accesToken = jwtUtils.createToken(authentication, userSaved.getId());
+        String accesToken = jwtUtils.createToken(authentication, userSaved);
         AuthResponse authResponse = new AuthResponse(userSaved.getId() ,username, "User created successfully", accesToken, true);
         return authResponse;
 
@@ -105,11 +106,11 @@ public class UserDetailServiceImpl implements UserDetailsService, IUserService {
     public AuthResponse loginUser(AuthLoginRequest authLoginRequest){
         String username = authLoginRequest.username();
         String password = authLoginRequest.password();
-        String idUser = getIdUser(username);
+        UserEntity user = getUserEntity(username);
         Authentication authentication = this.authenticate(username, password);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String accessToken = jwtUtils.createToken(authentication, idUser);
+        String accessToken = jwtUtils.createToken(authentication, user);
         AuthResponse authResponse = new AuthResponse(null, username, "User logged successfully", accessToken, true);
         return authResponse;
     }
