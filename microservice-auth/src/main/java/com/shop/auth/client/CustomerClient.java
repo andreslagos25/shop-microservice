@@ -9,5 +9,5 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface CustomerClient {
 
     @GetMapping("api/client/search-by-user/{idUser}")
-    ClientDTO findClientByUser(@PathVariable String idUser);
+    ClientDTO findClientByUser(@PathVariable("idUser") String idUser);
 }
