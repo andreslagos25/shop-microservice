@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  msvc-config:
+    image: msvc-config:latest
+    container_name: msvc-config
+    build:
+      context: ./microservice-config
+      dockerfile: Dockerfile
+    ports:
+      - "8888:8888"
+    networks:
+      - shop-network
+    environment:
+      SPRING_PROFILES_ACTIVE: native
+      SERVER_PORT: 8888
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8888/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  msvc-eureka:
+    image: msvc-eureka:latest
+    container_name: msvc-eureka
+    build:
+      context: ./microservice-eureka
+      dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
+    networks:
+      - shop-network
+    depends_on:
+      msvc-config:
+        condition: service_healthy
+    environment:
+      CONFIG_SERVER_URL: http://msvc-config:8888
+      SERVER_PORT: 8761
+    restart: on-failure
+
+  msvc-gateway:
+    image: msvc-gateway:latest
+    container_name: msvc-gateway
+    build:
+      context: ./microservice-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - shop-network
+    depends_on:
+      msvc-config:
+        condition: service_healthy
+      msvc-eureka:
+        condition: service_started
+    environment:
+      CONFIG_SERVER_URL: http://msvc-config:8888
+      SPRING_PROFILES_ACTIVE: docker
+    restart: on-failure
+
+networks:
+  shop-network:
+    driver: bridge

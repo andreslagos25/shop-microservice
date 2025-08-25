@@ -3,11 +3,20 @@ server:
 
 spring:
   application:
-    name: microservice-config
+    name: msvc-config
   profiles:
     active: native
   cloud:
     config:
       server:
         native:
-          search-locations: classpath:/configurations
+          search-locations: classpath:/configurations/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+eureka:
+  client:
+    enabled: false

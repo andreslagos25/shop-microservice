@@ -5,7 +5,7 @@ FROM amazoncorretto:20.0.2-alpine3.18
 WORKDIR /app
 
 # Copiar el archivo JAR de la aplicación al contenedor
-COPY target/microservice.gateway-0.0.1-SNAPSHOT.jar microservice-gateway
+COPY target/microservice.gateway-0.0.1-SNAPSHOT.jar microservice-gateway.jar
 
 # Exponer el puerto en el que corre la aplicación
 EXPOSE 8080

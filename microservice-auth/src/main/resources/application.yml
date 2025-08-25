@@ -2,7 +2,7 @@ spring:
   application:
     name: msvc-auth
   config:
-    import: optional:configserver:http://localhost:8888
+    import: optional:configserver:http://msvc-config:8888
   cloud:
     config:
       import-check:
