@@ -52,16 +52,3 @@ logging:
   level:
     org.springframework.cloud.gateway: DEBUG
     com.netflix.eureka: DEBUG
----
-# Configuración específica para Docker
-spring:
-  config:
-    activate:
-      on-profile: docker
-
-eureka:
-  instance:
-    hostname: msvc-gateway
-  client:
-    service-url:
-      defaultZone: http://msvc-eureka:8761/eureka/

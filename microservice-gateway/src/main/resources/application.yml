@@ -4,13 +4,6 @@ spring:
   profiles:
     active: local
   config:
-    import: optional:configserver:http://localhost:8888
+    import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888}
 
----
 
-spring:
-  config:
-    activate:
-      on-profile: docker
-    config:
-      import: optional:configserver:http://msvc-config:8888
