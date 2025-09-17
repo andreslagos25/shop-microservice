@@ -61,6 +61,24 @@ services:
       SPRING_PROFILES_ACTIVE: native
     restart: on-failure
 
+  db-auth:
+      image: mysql:latest
+      container_name: db-auth
+      restart: always
+      environment:
+        MYSQL_ROOT_PASSWORD: secret
+        MYSQL_DATABASE: authDb
+      ports:
+        - "3307:3306"
+      networks:
+        - shop-network
+      volumes:
+        - db_auth_data:/var/lib/mysql
+
+
+
 networks:
   shop-network:
     driver: bridge
+volumes:
+  db_auth_data:
