@@ -61,6 +61,33 @@ services:
       SPRING_PROFILES_ACTIVE: native
     restart: on-failure
 
+  msvc-auth:
+    image: msvc-auth:latest
+    container_name: msvc-auth
+    build:
+      context: ./microservice-auth
+      dockerfile: Dockerfile
+    ports:
+      - "8090:8090"
+    networks:
+      - shop-network
+    depends_on:
+      db-auth:
+        condition: service_started
+      msvc-config:
+        condition: service_healthy
+      msvc-gateway:
+        condition: service_started
+    environment:
+      SERVER_PORT: 8090
+      CONFIG_SERVER_URL: http://msvc-config:8888
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://msvc-eureka:8761/eureka
+      EUREKA_INSTANCE_HOSTNAME: msvc-auth
+      SPRING_PROFILES_ACTIVE: native
+      DB_URL: jdbc:mysql://db-auth:3306/authDb
+      DB_USER: root
+      DB_PASS: secret
+
   db-auth:
       image: mysql:latest
       container_name: db-auth

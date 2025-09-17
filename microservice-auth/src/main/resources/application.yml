@@ -1,8 +1,11 @@
+server:
+  port: ${SERVER_PORT:8090}
+
 spring:
   application:
     name: msvc-auth
   config:
-    import: optional:configserver:http://msvc-config:8888
+    import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888}
   cloud:
     config:
       import-check:
