@@ -102,6 +102,25 @@ services:
       volumes:
         - db_auth_data:/var/lib/mysql
 
+  init-auth-db:
+    image: mysql:latest
+    depends_on:
+      - msvc-auth
+    networks:
+      - shop-network
+    volumes:
+      - ./mysql-init/init.sql:/init.sql
+    entrypoint: >
+      sh -c "
+        echo 'Esperando a que MySQL esté listo...' &&
+        sleep 40 &&
+        echo 'MySQL listo, cargando datos iniciales...' &&
+        mysql -hdb-auth -uroot -psecret authDb < /init.sql 2>/dev/null || true &&
+        echo 'Datos cargados correctamente.' &&
+        rm -f /init.sql &&
+        echo 'Archivo init.sql eliminado por seguridad.'
+      "
+
 
 
 networks:
