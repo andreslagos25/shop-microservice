@@ -102,6 +102,21 @@ services:
       volumes:
         - db_auth_data:/var/lib/mysql
 
+  db-clients:
+    image: postgres
+    container_name: db-clients
+    restart: always
+    environment:
+      POSTGRES_DB: ShopClients
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 28_X53-9#fyt
+    ports:
+      - "5433:5432"
+    networks:
+      - shop-network
+    volumes:
+      - db_clients_data:/var/lib/postgresql/data
+
   init-auth-db:
     image: mysql:latest
     depends_on:
@@ -128,3 +143,4 @@ networks:
     driver: bridge
 volumes:
   db_auth_data:
+  db_clients_data:
