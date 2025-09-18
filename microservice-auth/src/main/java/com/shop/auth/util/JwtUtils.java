@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.shop.auth.persistance.entity.UserEntity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -29,12 +30,13 @@ public class JwtUtils {
      * @param authentication
      * @return
      */
-    public String createToken(Authentication authentication){
+    public String createToken(Authentication authentication, UserEntity user){
         // Designa el algoritmo HMAC256 para la clave secreta
         Algorithm algorithm = Algorithm.HMAC256(this.privateKey);
 
         // Obtiene el nombre de usuario del objeto authentication
         String username = authentication.getPrincipal().toString();
+        System.out.println(authentication);
         // Extrae las autorithies del objeto authentication
         String authorities = authentication.getAuthorities()
                 .stream()
@@ -45,8 +47,10 @@ public class JwtUtils {
         // además se le agrega fechas para que el token expire
         String jwtToken = JWT.create()
                 .withIssuer(this.userGenerator)
-                .withSubject(username)
+                .withSubject(user.getId())
                 .withClaim("authorities", authorities)
+                .withClaim("username", username)
+                .withClaim("enabled", user.isEnabled())
                 .withIssuedAt(new Date())
                 .withExpiresAt(new Date(System.currentTimeMillis() + 1800000))
                 .withJWTId(UUID.randomUUID().toString())
@@ -61,6 +65,7 @@ public class JwtUtils {
 
             JWTVerifier verifier = JWT.require(algorithm)
                     .withIssuer(this.userGenerator)
+                    .withClaim("enabled", true)
                     .build();
 
             DecodedJWT decodedJWT = verifier.verify(token);
@@ -71,7 +76,7 @@ public class JwtUtils {
     }
 
     public String extractUsername(DecodedJWT decodedJWT){
-        return decodedJWT.getSubject().toString();
+        return decodedJWT.getClaim("username").toString();
     }
 
     public Claim getSpecificClaim(DecodedJWT decodedJWT, String claimName){

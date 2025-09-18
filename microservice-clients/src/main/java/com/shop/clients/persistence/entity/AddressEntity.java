@@ -1,5 +1,6 @@
 package com.shop.clients.persistence.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,6 +29,7 @@ public class AddressEntity {
 
     @ManyToOne
     @JoinColumn(name = "client_id")
+    @JsonBackReference
     private ClientEntity client;
 }
 

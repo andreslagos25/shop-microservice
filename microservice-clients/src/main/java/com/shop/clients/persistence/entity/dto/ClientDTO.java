@@ -25,4 +25,6 @@ public class ClientDTO {
     private String phone;
     @NotNull
     private Set<AddressDTO> addressSet;
+    @NotNull
+    private String userId;
 }

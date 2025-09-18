@@ -21,7 +21,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig {
+public class SecurityConfig{
 
     @Autowired
     private JwtUtils jwtUtils;
@@ -57,7 +57,4 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    public static void main(String[] args) {
-        System.out.println(new BCryptPasswordEncoder().encode("1234"));
-    }
 }

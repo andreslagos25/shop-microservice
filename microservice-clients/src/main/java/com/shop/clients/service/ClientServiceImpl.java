@@ -8,7 +8,6 @@ import com.shop.clients.persistence.repository.AddressRepository;
 import com.shop.clients.persistence.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -38,6 +37,7 @@ public class ClientServiceImpl implements IClientService{
                 .lastnameClient(clientDTO.getLastnameClient())
                 .email(clientDTO.getEmail())
                 .phone(clientDTO.getPhone())
+                .userId(clientDTO.getUserId())
                 .build();
         client = clientRepository.save(client);
         for(AddressDTO addressDTO : clientDTO.getAddressSet()){
@@ -54,8 +54,17 @@ public class ClientServiceImpl implements IClientService{
     }
 
 
+
     @Override
     public ClientEntity findById(String id) {
         return clientRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Not found"));
+    }
+
+    /**
+     * Obtenemos la data del cliente por medio del ID del usuario
+     */
+    @Override
+    public ClientEntity findByUserId(String idUser){
+        return clientRepository.findByUserId(idUser).orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
 }

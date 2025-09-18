@@ -29,31 +29,6 @@ public class JwtUtils {
      * @param authentication
      * @return
      */
-    public String createToken(Authentication authentication){
-        // Designa el algoritmo HMAC256 para la clave secreta
-        Algorithm algorithm = Algorithm.HMAC256(this.privateKey);
-
-        // Obtiene el nombre de usuario del objeto authentication
-        String username = authentication.getPrincipal().toString();
-        // Extrae las autorithies del objeto authentication
-        String authorities = authentication.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
-
-        // Le pasamos los datos para crear el token
-        // además se le agrega fechas para que el token expire
-        String jwtToken = JWT.create()
-                .withIssuer(this.userGenerator)
-                .withSubject(username)
-                .withClaim("authorities", authorities)
-                .withIssuedAt(new Date())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 1800000))
-                .withJWTId(UUID.randomUUID().toString())
-                .withNotBefore(new Date(System.currentTimeMillis()))
-                .sign(algorithm);
-        return jwtToken;
-    }
 
     public DecodedJWT validateToken(String token){
         try {
@@ -61,6 +36,7 @@ public class JwtUtils {
 
             JWTVerifier verifier = JWT.require(algorithm)
                     .withIssuer(this.userGenerator)
+                    .withClaim("enabled", true)
                     .build();
 
             DecodedJWT decodedJWT = verifier.verify(token);
@@ -71,7 +47,7 @@ public class JwtUtils {
     }
 
     public String extractUsername(DecodedJWT decodedJWT){
-        return decodedJWT.getSubject().toString();
+        return decodedJWT.getClaim("username").toString();
     }
 
     public Claim getSpecificClaim(DecodedJWT decodedJWT, String claimName){

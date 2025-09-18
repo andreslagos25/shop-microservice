@@ -1,5 +1,6 @@
 package com.shop.clients.persistence.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,7 +13,9 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "clients")
+@Table(name = "clients", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "user_id")
+})
 public class ClientEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -27,6 +30,9 @@ public class ClientEntity {
     private String phone;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private Set<AddressEntity> addressSet = new HashSet<>();
 
+    @Column(name = "user_id")
+    private String userId;
 }

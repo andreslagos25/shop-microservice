@@ -9,12 +9,14 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 
 import java.util.List;
 import java.util.Set;
 
 
+@EnableFeignClients
 @EnableDiscoveryClient
 @SpringBootApplication
 public class MicroserviceAuthApplication {
@@ -23,7 +25,8 @@ public class MicroserviceAuthApplication {
 		SpringApplication.run(MicroserviceAuthApplication.class, args);
 	}
 
-
+	/* Puedes ejecutar una vez este comando */
+	/*
 	@Bean
 	CommandLineRunner init(UserRepository userRepository) {
 		return args -> {
@@ -55,9 +58,9 @@ public class MicroserviceAuthApplication {
 					.roleEnum(RoleEnum.DEVELOPER)
 					.permissionList(Set.of(createPermission, readPermission, updatePermission, refactorPermission))
 					.build();
-
+			*/
 			/* CREATE USERS */
-
+			/*
 			UserEntity userCarlos = UserEntity.builder()
 					.username("carlos")
 					.password("$2a$10$cMY29RPYoIHMJSuwRfoD3eQxU1J5Rww4VnNOUOAEPqCBshkNfrEf6")
@@ -89,5 +92,5 @@ public class MicroserviceAuthApplication {
 					.build();
 			userRepository.saveAll(List.of(userCarlos, userAndres, userLaura));
 		};
-	}
+	}*/
 }

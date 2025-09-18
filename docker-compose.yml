@@ -1,0 +1,173 @@
+version: '3.8'
+
+services:
+  msvc-config:
+    image: msvc-config:latest
+    container_name: msvc-config
+    build:
+      context: ./microservice-config
+      dockerfile: Dockerfile
+    ports:
+      - "8888:8888"
+    networks:
+      - shop-network
+    environment:
+      SPRING_PROFILES_ACTIVE: native
+      SERVER_PORT: 8888
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8888/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  msvc-eureka:
+    image: msvc-eureka:latest
+    container_name: msvc-eureka
+    build:
+      context: ./microservice-eureka
+      dockerfile: Dockerfile
+    ports:
+      - "8761:8761"
+    networks:
+      - shop-network
+    depends_on:
+      msvc-config:
+        condition: service_healthy
+    environment:
+      CONFIG_SERVER_URL: http://msvc-config:8888
+      SERVER_PORT: 8761
+      SPRING_PROFILES_ACTIVE: native
+    restart: on-failure
+
+  msvc-gateway:
+    image: msvc-gateway:latest
+    container_name: msvc-gateway
+    build:
+      context: ./microservice-gateway
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - shop-network
+    depends_on:
+      msvc-config:
+        condition: service_healthy
+      msvc-eureka:
+        condition: service_started
+    environment:
+      CONFIG_SERVER_URL: http://msvc-config:8888
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://msvc-eureka:8761/eureka
+      EUREKA_INSTANCE_HOSTNAME: msvc-gateway
+      SPRING_PROFILES_ACTIVE: native
+    restart: on-failure
+
+  msvc-auth:
+    image: msvc-auth:latest
+    container_name: msvc-auth
+    build:
+      context: ./microservice-auth
+      dockerfile: Dockerfile
+    ports:
+      - "8090:8090"
+    networks:
+      - shop-network
+    depends_on:
+      db-auth:
+        condition: service_started
+      msvc-config:
+        condition: service_healthy
+      msvc-gateway:
+        condition: service_started
+    environment:
+      SERVER_PORT: 8090
+      CONFIG_SERVER_URL: http://msvc-config:8888
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://msvc-eureka:8761/eureka
+      EUREKA_INSTANCE_HOSTNAME: msvc-auth
+      SPRING_PROFILES_ACTIVE: native
+      DB_URL: jdbc:mysql://db-auth:3306/authDb
+      DB_USER: root
+      DB_PASS: secret
+
+  msvc-clients:
+    image: msvc-clients
+    container_name: msvc-clients
+    build:
+      context: microservice-clients
+      dockerfile: Dockerfile
+    ports:
+      - "9090:9090"
+    networks:
+      - shop-network
+    depends_on:
+      db-clients:
+        condition: service_started
+      msvc-config:
+        condition: service_healthy
+      msvc-eureka:
+        condition: service_started
+    environment:
+      SERVER_PORT: 9090
+      CONFIG_SERVER_URL: http://msvc-config:8888
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://msvc-eureka:8761/eureka
+      EUREKA_INSTANCE_HOSTNAME: msvc-clients
+      SPRING_PROFILES_ACTIVE: native
+      DB_URL: jdbc:postgresql://db-clients:5432/ShopClients
+      DB_USER: postgres
+      DB_PASS: 28_x53-9#fyt
+
+  db-auth:
+      image: mysql:latest
+      container_name: db-auth
+      restart: always
+      environment:
+        MYSQL_ROOT_PASSWORD: secret
+        MYSQL_DATABASE: authDb
+      ports:
+        - "3307:3306"
+      networks:
+        - shop-network
+      volumes:
+        - db_auth_data:/var/lib/mysql
+
+  db-clients:
+    image: postgres
+    container_name: db-clients
+    restart: always
+    environment:
+      POSTGRES_DB: ShopClients
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 28_x53-9#fyt
+    ports:
+      - "5433:5432"
+    networks:
+      - shop-network
+    volumes:
+      - db_clients_data:/var/lib/postgresql/data
+
+  init-auth-db:
+    image: mysql:latest
+    depends_on:
+      - msvc-auth
+    networks:
+      - shop-network
+    volumes:
+      - ./mysql-init/init.sql:/init.sql
+    entrypoint: >
+      sh -c "
+        echo 'Esperando a que MySQL esté listo...' &&
+        sleep 40 &&
+        echo 'MySQL listo, cargando datos iniciales...' &&
+        mysql -hdb-auth -uroot -psecret authDb < /init.sql 2>/dev/null || true &&
+        echo 'Datos cargados correctamente.' &&
+        rm -f /init.sql &&
+        echo 'Archivo init.sql eliminado por seguridad.'
+      "
+
+
+
+networks:
+  shop-network:
+    driver: bridge
+volumes:
+  db_auth_data:
+  db_clients_data:

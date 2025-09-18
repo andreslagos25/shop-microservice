@@ -1,8 +1,11 @@
 package com.shop.auth.service;
 
+import com.shop.auth.client.CustomerClient;
 import com.shop.auth.controller.dto.AuthCreateUserRequest;
 import com.shop.auth.controller.dto.AuthLoginRequest;
 import com.shop.auth.controller.dto.AuthResponse;
+import com.shop.auth.controller.dto.ClientDTO;
+import com.shop.auth.http.response.ClientByUserResponse;
 import com.shop.auth.persistance.entity.RoleEntity;
 import com.shop.auth.persistance.entity.UserEntity;
 import com.shop.auth.persistance.repository.RoleRepository;
@@ -28,7 +31,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class UserDetailServiceImpl implements UserDetailsService {
+public class UserDetailServiceImpl implements UserDetailsService, IUserService {
 
     @Autowired
     private JwtUtils jwtUtils;
@@ -42,6 +45,9 @@ public class UserDetailServiceImpl implements UserDetailsService {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Autowired
+    private CustomerClient customerClient;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity userEntity = userRepository.findUserEntityByUsername(username).orElseThrow(() -> new UsernameNotFoundException("El usuario " + username + " no existe"));
@@ -51,6 +57,12 @@ public class UserDetailServiceImpl implements UserDetailsService {
         userEntity.getRoles().stream().flatMap(role -> role.getPermissionList().stream()).forEach(permission -> authorityList.add(new SimpleGrantedAuthority(permission.getName())));
 
         return new User(userEntity.getUsername(), userEntity.getPassword(), userEntity.isEnabled(), userEntity.isAccountNoExpired(), userEntity.isCredentialNoExpired(), userEntity.isAccountNoLocked(), authorityList);
+    }
+
+
+    public UserEntity getUserEntity(String username){
+        UserEntity userEntity = userRepository.findUserEntityByUsername(username).orElseThrow(() -> new UsernameNotFoundException("EL usuario " + username + " no existe"));
+        return userEntity;
     }
 
     public AuthResponse createUser(AuthCreateUserRequest createRoleRequest){
@@ -85,8 +97,8 @@ public class UserDetailServiceImpl implements UserDetailsService {
         SecurityContext securityContextHolder = SecurityContextHolder.getContext();
         Authentication authentication = new UsernamePasswordAuthenticationToken(userSaved, null, authorities);
 
-        String accesToken = jwtUtils.createToken(authentication);
-        AuthResponse authResponse = new AuthResponse(username, "User created successfully", accesToken, true);
+        String accesToken = jwtUtils.createToken(authentication, userSaved);
+        AuthResponse authResponse = new AuthResponse(userSaved.getId() ,username, "User created successfully", accesToken, true);
         return authResponse;
 
     }
@@ -94,12 +106,12 @@ public class UserDetailServiceImpl implements UserDetailsService {
     public AuthResponse loginUser(AuthLoginRequest authLoginRequest){
         String username = authLoginRequest.username();
         String password = authLoginRequest.password();
-
+        UserEntity user = getUserEntity(username);
         Authentication authentication = this.authenticate(username, password);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String accessToken = jwtUtils.createToken(authentication);
-        AuthResponse authResponse = new AuthResponse(username, "User logged successfully", accessToken, true);
+        String accessToken = jwtUtils.createToken(authentication, user);
+        AuthResponse authResponse = new AuthResponse(null, username, "User logged successfully", accessToken, true);
         return authResponse;
     }
 
@@ -115,5 +127,18 @@ public class UserDetailServiceImpl implements UserDetailsService {
         }
 
         return new UsernamePasswordAuthenticationToken(username, password, userDetails.getAuthorities());
+    }
+
+    @Override
+    public ClientByUserResponse findClientByIdUser(String idUser) {
+        // Consultar el usuario
+        UserEntity user = userRepository.findUserById(idUser).orElseThrow(() -> new RuntimeException("User doesn't exist"));
+
+        // Obtener el cliente
+        ClientDTO clientDTO = customerClient.findClientByUser(idUser);
+        return ClientByUserResponse.builder()
+                .username(user.getUsername())
+                .clientDTO(clientDTO)
+                .build();
     }
 }
