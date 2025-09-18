@@ -88,6 +88,33 @@ services:
       DB_USER: root
       DB_PASS: secret
 
+  msvc-clients:
+    image: msvc-clients
+    container_name: msvc-clients
+    build:
+      context: microservice-clients
+      dockerfile: Dockerfile
+    ports:
+      - "9090:9090"
+    networks:
+      - shop-network
+    depends_on:
+      db-clients:
+        condition: service_started
+      msvc-config:
+        condition: service_healthy
+      msvc-eureka:
+        condition: service_started
+    environment:
+      SERVER_PORT: 9090
+      CONFIG_SERVER_URL: http://msvc-config:8888
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://msvc-eureka:8761/eureka
+      EUREKA_INSTANCE_HOSTNAME: msvc-clients
+      SPRING_PROFILES_ACTIVE: native
+      DB_URL: jdbc:postgresql://db-clients:5432/ShopClients
+      DB_USER: postgres
+      DB_PASS: 28_x53-9#fyt
+
   db-auth:
       image: mysql:latest
       container_name: db-auth
@@ -109,7 +136,7 @@ services:
     environment:
       POSTGRES_DB: ShopClients
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 28_X53-9#fyt
+      POSTGRES_PASSWORD: 28_x53-9#fyt
     ports:
       - "5433:5432"
     networks:
