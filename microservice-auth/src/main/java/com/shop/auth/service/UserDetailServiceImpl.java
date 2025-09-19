@@ -107,6 +107,9 @@ public class UserDetailServiceImpl implements UserDetailsService, IUserService {
         String username = authLoginRequest.username();
         String password = authLoginRequest.password();
         UserEntity user = getUserEntity(username);
+        if(!user.isEnabled()){
+            throw new BadCredentialsException("The user is not enabled to login. Please contact with support");
+        }
         Authentication authentication = this.authenticate(username, password);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
