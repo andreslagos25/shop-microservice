@@ -1,10 +1,13 @@
 package com.shop.auth.controller;
 
+import com.shop.auth.controller.dto.ConfirmDTO;
 import com.shop.auth.persistance.entity.UserEntity;
 import com.shop.auth.persistance.repository.UserRepository;
+import com.shop.auth.service.UserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,13 +16,11 @@ import org.springframework.web.bind.annotation.*;
 public class ProfileController {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserDetailServiceImpl userService;
 
-    @PatchMapping("disable/{idUser}")
-    public ResponseEntity disableUser(@PathVariable String idUser){
-        UserEntity user = userRepository.findById(idUser).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        user.setEnabled(false);
-        userRepository.save(user);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    @PostMapping("/disable")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void disableMyAccount(@RequestBody ConfirmDTO confirmDTO){
+        userService.disableByUsernameWithValidation(confirmDTO.getPassword());
     }
 }

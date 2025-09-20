@@ -25,6 +25,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -143,5 +144,27 @@ public class UserDetailServiceImpl implements UserDetailsService, IUserService {
                 .username(user.getUsername())
                 .clientDTO(clientDTO)
                 .build();
+    }
+
+    /**
+     * @param confirm confirm password to disable user
+     *
+     *  Retrieves the username from the SecurityContextHolder and verifies
+     *  the provided password against the stored credentials.
+     *  If the credentials are valid, the user account is disabled.
+     */
+    public void disableByUsernameWithValidation(String confirm){
+        // Get authentication
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String rawName = authentication.getName();
+        // getName() returns the username with quotes, so we extract only the raw string
+        String username = rawName.substring(1, rawName.length() -1);
+        UserEntity user = getUserEntity(username);
+        // If the credentials are valid disable the user
+        if(!passwordEncoder.matches(confirm, user.getPassword())){
+            throw new BadCredentialsException("Password is not correct. Please try again");
+        }
+        user.setEnabled(false);
+        userRepository.save(user);
     }
 }
