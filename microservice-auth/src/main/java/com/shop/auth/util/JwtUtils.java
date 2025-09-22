@@ -12,6 +12,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -80,6 +81,18 @@ public class JwtUtils {
             DecodedJWT decodedJWT = verifier.verify(token);
             return decodedJWT;
         }catch (JWTVerificationException exception){
+            throw new JWTVerificationException("Token invalid, no Authorized");
+        }
+    }
+
+    public DecodedJWT validateRefreshToken(String refreshToken){
+        try{
+            Algorithm algorithm = Algorithm.HMAC256(this.privateKey);
+            JWTVerifier verifier = JWT.require(algorithm)
+                    .withClaim("type", "refresh")
+                    .build();
+            return verifier.verify(refreshToken);
+        } catch(JWTVerificationException exception){
             throw new JWTVerificationException("Token invalid, no Authorized");
         }
     }
