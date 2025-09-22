@@ -58,6 +58,15 @@ public class JwtUtils {
                 .sign(algorithm);
         return jwtToken;
     }
+    public String createRefreshToken(UserEntity user){
+        Algorithm algorithm = Algorithm.HMAC256(this.privateKey);
+        return JWT.create()
+                .withSubject(user.getId())
+                .withClaim("type", "refresh")
+                .withExpiresAt(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000))
+                .withJWTId(UUID.randomUUID().toString())
+                .sign(algorithm);
+    }
 
     public DecodedJWT validateToken(String token){
         try {
