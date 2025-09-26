@@ -23,8 +23,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/log-in")
-    public ResponseEntity<AuthResponse> login(@RequestBody @Valid AuthLoginRequest userRequest){
-        return new ResponseEntity<>(this.userDetailService.loginUser(userRequest), HttpStatus.OK);
+    public ResponseEntity<AuthResponse> login(@RequestBody @Valid AuthLoginRequest userRequest, @CookieValue(name = "refresh_token", required = false) String refresh_token){
+        return this.userDetailService.loginUser(userRequest, refresh_token);
     }
 
     @GetMapping("/search-client/{idUser}")
