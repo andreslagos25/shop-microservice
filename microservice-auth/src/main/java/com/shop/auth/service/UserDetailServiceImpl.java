@@ -1,6 +1,7 @@
 package com.shop.auth.service;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.shop.auth.client.CustomerClient;
 import com.shop.auth.controller.dto.AuthCreateUserRequest;
 import com.shop.auth.controller.dto.AuthLoginRequest;
@@ -16,6 +17,7 @@ import com.shop.auth.persistance.repository.UserRepository;
 import com.shop.auth.util.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -179,6 +181,35 @@ public class UserDetailServiceImpl implements UserDetailsService, IUserService {
         AuthResponse authResponse = new AuthResponse(null, username, "User logged successfully", accessToken, true);
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body(authResponse);
+    }
+
+    public ResponseEntity<AuthResponse> accessTokenWithRefresh(String refreshToken){
+        try{
+            DecodedJWT token = jwtUtils.validateRefreshToken(refreshToken);
+            String userId = token.getSubject();
+            Optional<UserEntity> maybeUser = userRepository.findUserById(userId);
+            if(maybeUser.isPresent()){
+                UserEntity user = maybeUser.get();
+                ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<>();
+                user.getRoles().forEach(role ->
+                        authorities.add(new SimpleGrantedAuthority("ROLE_".concat(role.getRoleEnum().name())))
+                );
+                user.getRoles().stream().flatMap(
+                                role -> role.getPermissionList().stream())
+                        .forEach(permission -> authorities.add(new SimpleGrantedAuthority(permission.getName())));
+
+                Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, authorities);
+                String accessToken = jwtUtils.createToken(authentication, user);
+                AuthResponse authResponse = new AuthResponse(null, user.getUsername(), "New access Token generated", accessToken, true);
+                return ResponseEntity.ok().body(authResponse);
+            }else{
+                throw new BadCredentialsException("The user does not exist");
+            }
+
+        }catch (JWTVerificationException ex){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+
+        }
     }
 
     public Authentication authenticate(String username, String password){

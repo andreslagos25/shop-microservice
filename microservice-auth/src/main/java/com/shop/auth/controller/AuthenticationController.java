@@ -27,6 +27,11 @@ public class AuthenticationController {
         return this.userDetailService.loginUser(userRequest, refresh_token);
     }
 
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthResponse> tokenWithRefresh(@CookieValue(name = "refresh_token") String refresh_token){
+        return this.userDetailService.accessTokenWithRefresh(refresh_token);
+    }
+
     @GetMapping("/search-client/{idUser}")
     public ResponseEntity<?> findClientByIdUser(@PathVariable String idUser){
         return ResponseEntity.ok(userDetailService.findClientByIdUser(idUser));
