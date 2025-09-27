@@ -36,4 +36,10 @@ public class AuthenticationController {
     public ResponseEntity<?> findClientByIdUser(@PathVariable String idUser){
         return ResponseEntity.ok(userDetailService.findClientByIdUser(idUser));
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@CookieValue(name = "refresh_token") String refresh_token){
+        this.userDetailService.logout(refresh_token);
+        return ResponseEntity.ok("User logged out successfully");
+    }
 }

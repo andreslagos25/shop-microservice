@@ -212,6 +212,16 @@ public class UserDetailServiceImpl implements UserDetailsService, IUserService {
         }
     }
 
+    public void logout(String refreshToken){
+        Optional<RefreshTokenEntity> tokenEntity = refreshTokenRepository.findByToken(refreshToken);
+        if (tokenEntity.isPresent()){
+            tokenEntity.get().setRevoked(true);
+            refreshTokenRepository.save(tokenEntity.get());
+        }else{
+            throw new JWTVerificationException("The token doesn't exists");
+        }
+    }
+
     public Authentication authenticate(String username, String password){
         UserDetails userDetails = this.loadUserByUsername(username);
 
