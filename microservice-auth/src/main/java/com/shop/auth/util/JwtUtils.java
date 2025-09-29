@@ -36,7 +36,6 @@ public class JwtUtils {
 
         // Obtiene el nombre de usuario del objeto authentication
         String username = authentication.getPrincipal().toString();
-        System.out.println(authentication);
         // Extrae las autorithies del objeto authentication
         String authorities = authentication.getAuthorities()
                 .stream()
@@ -58,6 +57,15 @@ public class JwtUtils {
                 .sign(algorithm);
         return jwtToken;
     }
+    public String createRefreshToken(UserEntity user){
+        Algorithm algorithm = Algorithm.HMAC256(this.privateKey);
+        return JWT.create()
+                .withSubject(user.getId())
+                .withClaim("type", "refresh")
+                .withExpiresAt(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000))
+                .withJWTId(UUID.randomUUID().toString())
+                .sign(algorithm);
+    }
 
     public DecodedJWT validateToken(String token){
         try {
@@ -71,6 +79,18 @@ public class JwtUtils {
             DecodedJWT decodedJWT = verifier.verify(token);
             return decodedJWT;
         }catch (JWTVerificationException exception){
+            throw new JWTVerificationException("Token invalid, no Authorized");
+        }
+    }
+
+    public DecodedJWT validateRefreshToken(String refreshToken){
+        try{
+            Algorithm algorithm = Algorithm.HMAC256(this.privateKey);
+            JWTVerifier verifier = JWT.require(algorithm)
+                    .withClaim("type", "refresh")
+                    .build();
+            return verifier.verify(refreshToken);
+        } catch(JWTVerificationException exception){
             throw new JWTVerificationException("Token invalid, no Authorized");
         }
     }

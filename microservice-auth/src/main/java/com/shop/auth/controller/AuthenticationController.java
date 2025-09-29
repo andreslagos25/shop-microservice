@@ -23,12 +23,23 @@ public class AuthenticationController {
     }
 
     @PostMapping("/log-in")
-    public ResponseEntity<AuthResponse> login(@RequestBody @Valid AuthLoginRequest userRequest){
-        return new ResponseEntity<>(this.userDetailService.loginUser(userRequest), HttpStatus.OK);
+    public ResponseEntity<AuthResponse> login(@RequestBody @Valid AuthLoginRequest userRequest, @CookieValue(name = "refresh_token", required = false) String refresh_token){
+        return this.userDetailService.loginUser(userRequest, refresh_token);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthResponse> tokenWithRefresh(@CookieValue(name = "refresh_token") String refresh_token){
+        return this.userDetailService.accessTokenWithRefresh(refresh_token);
     }
 
     @GetMapping("/search-client/{idUser}")
     public ResponseEntity<?> findClientByIdUser(@PathVariable String idUser){
         return ResponseEntity.ok(userDetailService.findClientByIdUser(idUser));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(@CookieValue(name = "refresh_token") String refresh_token){
+        this.userDetailService.logout(refresh_token);
+        return ResponseEntity.ok("User logged out successfully");
     }
 }
