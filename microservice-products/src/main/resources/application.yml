@@ -1,0 +1,12 @@
+server:
+  port: ${SERVER_PORT:9091}
+
+spring:
+  application:
+    name: msvc-products
+  config:
+    import: optional:configserver:${CONFIG_SERVER_URL:http://localhost:8888}
+  cloud:
+    config:
+      import-check:
+        enabled: false

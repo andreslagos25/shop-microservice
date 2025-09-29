@@ -24,6 +24,7 @@
     <module>microservice-gateway</module>
     <module>microservice-clients</module>
     <module>microservice-auth</module>
+    <module>microservice-products</module>
   </modules>
 
   <properties>
