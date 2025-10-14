@@ -1,7 +1,7 @@
 package com.shop.products.controller;
 
 import com.shop.products.controller.dto.SupplierCreateRequest;
-import com.shop.products.service.SupplierServiceImpl;
+import com.shop.products.service.impl.SupplierServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

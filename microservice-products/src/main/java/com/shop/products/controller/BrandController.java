@@ -1,10 +1,9 @@
 package com.shop.products.controller;
 
 import com.shop.products.controller.dto.BrandCreateRequest;
-import com.shop.products.service.BrandServiceImpl;
+import com.shop.products.service.impl.BrandServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

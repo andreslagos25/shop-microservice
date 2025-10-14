@@ -1,13 +1,14 @@
-package com.shop.products.service;
+package com.shop.products.service.impl;
 
 import com.shop.products.controller.dto.BrandCreateRequest;
 import com.shop.products.persistence.entity.Brand;
 import com.shop.products.persistence.repository.BrandRepository;
+import com.shop.products.service.IBrandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class BrandServiceImpl implements IBrandService{
+public class BrandServiceImpl implements IBrandService {
 
     @Autowired
     BrandRepository brandRepository;

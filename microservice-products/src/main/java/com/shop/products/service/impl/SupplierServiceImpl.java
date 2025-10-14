@@ -1,13 +1,14 @@
-package com.shop.products.service;
+package com.shop.products.service.impl;
 
 import com.shop.products.controller.dto.SupplierCreateRequest;
 import com.shop.products.persistence.entity.Supplier;
 import com.shop.products.persistence.repository.SupplierRepository;
+import com.shop.products.service.ISupplierService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SupplierServiceImpl implements ISupplierService{
+public class SupplierServiceImpl implements ISupplierService {
 
     @Autowired
     SupplierRepository supplierRepository;
