@@ -2,6 +2,7 @@ package com.shop.products.service.impl;
 
 
 import com.shop.products.controller.dto.CategoryCreateRequest;
+import com.shop.products.exception.ResourceAlreadyExistsException;
 import com.shop.products.persistence.entity.Category;
 import com.shop.products.persistence.repository.CategoryRepository;
 import com.shop.products.service.ICategoryService;
@@ -16,6 +17,10 @@ public class CategoryServiceImpl implements ICategoryService {
 
     @Override
     public void saveCategory(CategoryCreateRequest createRequest) {
+        categoryRepository.findByNameCategory(createRequest.nameCategory())
+                .ifPresent(exists ->{
+                    throw new ResourceAlreadyExistsException("Cannot create two categories with the same name");
+                });
         Category category = Category.builder()
                 .nameCategory(createRequest.nameCategory())
                 .build();

@@ -1,6 +1,7 @@
 package com.shop.products.service.impl;
 
 import com.shop.products.controller.dto.BrandCreateRequest;
+import com.shop.products.exception.ResourceAlreadyExistsException;
 import com.shop.products.persistence.entity.Brand;
 import com.shop.products.persistence.repository.BrandRepository;
 import com.shop.products.service.IBrandService;
@@ -15,6 +16,10 @@ public class BrandServiceImpl implements IBrandService {
 
     @Override
     public void saveBrand(BrandCreateRequest brandCreateRequest) {
+        brandRepository.findByNameBrand(brandCreateRequest.nameBrand())
+                .ifPresent(exists -> {
+                    throw new ResourceAlreadyExistsException("There is already a brand with the same name");
+                });
         Brand brand = Brand.builder()
                 .nameBrand(brandCreateRequest.nameBrand())
                 .build();
