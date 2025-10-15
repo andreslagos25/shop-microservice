@@ -15,9 +15,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
 
+    // Method to handle exceptions caused by jakarta validations EX: @NotBlank
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiError> handleJakartaValidation(MethodArgumentNotValidException ex){
         ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, "There's a problem with one or more fields in your request");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
+    }
+
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    public ResponseEntity<ApiError> handelResourceAlreadyExist(ResourceAlreadyExistsException ex){
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
 }
