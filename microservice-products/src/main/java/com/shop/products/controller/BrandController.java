@@ -2,6 +2,7 @@ package com.shop.products.controller;
 
 import com.shop.products.controller.dto.BrandCreateRequest;
 import com.shop.products.service.impl.BrandServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +16,7 @@ public class BrandController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void saveBrand(@RequestBody BrandCreateRequest brandCreateRequest){
+    public void saveBrand(@Valid @RequestBody BrandCreateRequest brandCreateRequest){
         brandService.saveBrand(brandCreateRequest);
     }
 }
