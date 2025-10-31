@@ -1,6 +1,6 @@
 package com.shop.products.controller;
 
-import com.shop.products.controller.dto.StockCreateRequest;
+import com.shop.products.controller.dto.request.StockCreateRequest;
 import com.shop.products.service.impl.StockServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;

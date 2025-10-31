@@ -1,7 +1,7 @@
 package com.shop.products.service.impl;
 
-import com.shop.products.controller.dto.BrandCreateRequest;
-import com.shop.products.controller.dto.BrandResponse;
+import com.shop.products.controller.dto.request.BrandCreateRequest;
+import com.shop.products.controller.dto.response.BrandResponse;
 import com.shop.products.exception.ResourceAlreadyExistsException;
 import com.shop.products.persistence.entity.Brand;
 import com.shop.products.persistence.repository.BrandRepository;

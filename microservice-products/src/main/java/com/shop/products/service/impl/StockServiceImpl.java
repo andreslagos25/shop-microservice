@@ -1,6 +1,6 @@
 package com.shop.products.service.impl;
 
-import com.shop.products.controller.dto.StockCreateRequest;
+import com.shop.products.controller.dto.request.StockCreateRequest;
 import com.shop.products.exception.ResourceAlreadyExistsException;
 import com.shop.products.exception.ResourceNotFoundException;
 import com.shop.products.exception.ValidationException;

@@ -1,6 +1,6 @@
 package com.shop.products.service.impl;
 
-import com.shop.products.controller.dto.SupplierCreateRequest;
+import com.shop.products.controller.dto.request.SupplierCreateRequest;
 import com.shop.products.exception.ResourceAlreadyExistsException;
 import com.shop.products.persistence.entity.Supplier;
 import com.shop.products.persistence.repository.SupplierRepository;

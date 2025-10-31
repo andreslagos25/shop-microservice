@@ -1,8 +1,8 @@
 package com.shop.products.service;
 
 
-import com.shop.products.controller.dto.BrandCreateRequest;
-import com.shop.products.controller.dto.BrandResponse;
+import com.shop.products.controller.dto.request.BrandCreateRequest;
+import com.shop.products.controller.dto.response.BrandResponse;
 
 import java.util.List;
 

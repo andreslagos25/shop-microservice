@@ -1,14 +1,13 @@
 package com.shop.products.controller;
 
-import com.shop.products.controller.dto.BrandCreateRequest;
-import com.shop.products.controller.dto.BrandResponse;
+import com.shop.products.controller.dto.request.BrandCreateRequest;
+import com.shop.products.controller.dto.response.BrandResponse;
 import com.shop.products.service.impl.BrandServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
