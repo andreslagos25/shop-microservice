@@ -1,6 +1,10 @@
 package com.shop.products.service.impl;
 
 import com.shop.products.controller.dto.request.ProductCreateRequest;
+import com.shop.products.controller.dto.response.BrandResponse;
+import com.shop.products.controller.dto.response.CategoryResponse;
+import com.shop.products.controller.dto.response.ProductResponse;
+import com.shop.products.controller.dto.response.SupplierResponse;
 import com.shop.products.exception.ResourceAlreadyExistsException;
 import com.shop.products.exception.ResourceNotFoundException;
 import com.shop.products.persistence.entity.Brand;
@@ -16,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ProductServiceImpl implements IProductService {
@@ -52,5 +58,45 @@ public class ProductServiceImpl implements IProductService {
                 .updatedAt(Instant.now())
                 .build();
         productRepository.save(product);
+    }
+
+    @Override
+    public List<ProductResponse> getAllProducts() {
+        return iterableToProductList(productRepository.findAll());
+    }
+
+    public List<ProductResponse> iterableToProductList(Iterable<Product> iterable){
+        List<ProductResponse> productList = new ArrayList<>();
+        for(Product product: iterable){
+            productList.add(new ProductResponse(
+                    product.getNameProduct(),
+                    product.getPrice(),
+                    product.getDescription(),
+                    buildSupplierResponse(product.getSupplier()),
+                    buildBrandResponse(product.getBrand()),
+                    buildCategoryResponse(product.getCategory())
+            ));
+
+        }
+        return productList;
+    }
+
+    public SupplierResponse buildSupplierResponse(Supplier supplier){
+        return new SupplierResponse(
+                supplier.getId(),
+                supplier.getNameSupplier(),
+                supplier.getContactEmail(),
+                supplier.getPhoneNumber(),
+                supplier.getAddress(),
+                supplier.getCountry()
+        );
+    }
+
+    public BrandResponse buildBrandResponse(Brand brand){
+        return new BrandResponse(brand.getIdBrand(), brand.getNameBrand());
+    }
+
+    public CategoryResponse buildCategoryResponse(Category category){
+        return new CategoryResponse(category.getIdCategory(), category.getNameCategory());
     }
 }
