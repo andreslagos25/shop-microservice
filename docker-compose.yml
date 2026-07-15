@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   msvc-config:
@@ -15,7 +15,15 @@ services:
       SPRING_PROFILES_ACTIVE: native
       SERVER_PORT: 8888
     healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8888/actuator/health"]
+      test:
+        [
+          "CMD",
+          "wget",
+          "--quiet",
+          "--tries=1",
+          "--spider",
+          "http://localhost:8888/actuator/health",
+        ]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -116,21 +124,21 @@ services:
       DB_PASS: 28_x53-9#fyt
 
   db-auth:
-      image: mysql:latest
-      container_name: db-auth
-      restart: always
-      environment:
-        MYSQL_ROOT_PASSWORD: secret
-        MYSQL_DATABASE: authDb
-      ports:
-        - "3307:3306"
-      networks:
-        - shop-network
-      volumes:
-        - db_auth_data:/var/lib/mysql
+    image: mysql:latest
+    container_name: db-auth
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: authDb
+    ports:
+      - "3307:3306"
+    networks:
+      - shop-network
+    volumes:
+      - db_auth_data:/var/lib/mysql
 
   db-clients:
-    image: postgres
+    image: postgres:17
     container_name: db-clients
     restart: always
     environment:
@@ -162,8 +170,6 @@ services:
         rm -f /init.sql &&
         echo 'Archivo init.sql eliminado por seguridad.'
       "
-
-
 
 networks:
   shop-network:
